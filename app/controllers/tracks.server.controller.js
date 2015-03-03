@@ -106,13 +106,14 @@ exports.hasAuthorization = function(req, res, next) {
 	next();
 };
 
-// Upsert
-//exports.upsert = function(query, update) {
-//    Track.findOneAndUpdate(query, update, {upsert: true}, function(err, track) {
-//        if (err) {
-//            return errorHandler.getErrorMessage(err);
-//        } else {
-//            return 'ok';
-//        }
-//    });
-//};
+/**
+ *  Finds a matching document, updates it according to the update arg or inserts it if not found
+ *  This is currently only used by walker and not returning http responses
+ */
+exports.upsert = function (conditions, update) {
+    Track.findOneAndUpdate(conditions, update, {upsert: true}).exec(function(err, track) {
+        if (err) {
+            return errorHandler.getErrorMessage(err);
+        }
+    });
+};

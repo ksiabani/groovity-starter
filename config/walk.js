@@ -15,10 +15,9 @@ module.exports = (function () {
         path = require('path'),
         config = require('../config/config'),
         chalk = require('chalk'),
+        id3 = require('id3_reader'),
         errorHandler = require('../app/controllers/errors.server.controller'),
-        tracks = require('../app/controllers/tracks.server.controller'),
-        mongoose = require('mongoose'),
-        Track = require('mongoose').model('Track');
+        tracks = require('../app/controllers/tracks.server.controller');
 
     var options = {
         filters: ['@eaDir'],
@@ -43,12 +42,13 @@ module.exports = (function () {
             file: function (root, fileStats, next) {
                 if (fileStats.name.match(/(?:mp3)/)) {
                     var path = root + '/' + fileStats.name;
-                    //Track.upsert({'path': path}, {'path': path});
-                    Track.findOneAndUpdate({'path': path}, {'path': path}, {upsert: true}, function(err, track) {
+                    // tracks.upsert({'path': path}, {'path': path});
+                    id3.read(path, function(err, meta) {
                         if (err) {
                             return errorHandler.getErrorMessage(err);
                         } else {
-                            return 'ok';
+                            //console.log(meta.artist, meta.title, meta.genre, path);
+                            tracks.upsert({'path': path}, meta);
                         }
                     });
                 }
