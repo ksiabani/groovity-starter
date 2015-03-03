@@ -17,7 +17,9 @@ module.exports = (function () {
         chalk = require('chalk'),
         id3 = require('id3_reader'),
         errorHandler = require('../app/controllers/errors.server.controller'),
-        tracks = require('../app/controllers/tracks.server.controller');
+        tracks = require('../app/controllers/tracks.server.controller'),
+        mongoose = require('mongoose'),
+        Track = mongoose.model('Track');
 
     var options = {
         filters: ['@eaDir'],
@@ -39,19 +41,30 @@ module.exports = (function () {
             //    next();
             //}
             //,
+            //, file: function (root, fileStats, next) {
+            //    fs.readFile(fileStats.name, function () {
+            //        // doStuff
+            //        next();
+            //    });
+            //}
             file: function (root, fileStats, next) {
-                if (fileStats.name.match(/(?:mp3)/)) {
-                    var path = root + '/' + fileStats.name;
-                    // tracks.upsert({'path': path}, {'path': path});
-                    id3.read(path, function(err, meta) {
-                        if (err) {
-                            return errorHandler.getErrorMessage(err);
-                        } else {
-                            //console.log(meta.artist, meta.title, meta.genre, path);
-                            tracks.upsert({'path': path}, meta);
-                        }
-                    });
-                }
+                fs.readFile(fileStats.name, function () {
+                    if (fileStats.name.match(/(?:mp3)/)) {
+                        var path = root + '/' + fileStats.name;
+                        id3.read(path, function (err, meta) {
+                            if (err) {
+                                return errorHandler.getErrorMessage(err);
+                            } else {
+                                //tracks.upsert({'path': path}, meta);
+                                Track.findOneAndUpdate({'path': path}, meta, {upsert: true}).exec(function (err) {
+                                    if (err) {
+                                        return errorHandler.getErrorMessage(err);
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
                 next();
             },
             errors: function (root, nodeStatsArray, next) {
