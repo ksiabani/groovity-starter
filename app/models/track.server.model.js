@@ -26,7 +26,7 @@ var TrackSchema = new Schema({
         default: '',
         trim: true
     },
-    publisher: {
+    label: {
         type: String,
         default: '',
         trim: true

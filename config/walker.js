@@ -34,7 +34,7 @@ module.exports = (function () {
                             artist: meta.artist,
                             title: meta.title,
                             album: meta.album,
-                            publisher: meta.publisher,
+                            label: meta.publisher,
                             genre: meta.genre,
                             year: meta.year,
                             released: new Date(meta.rip_date),
