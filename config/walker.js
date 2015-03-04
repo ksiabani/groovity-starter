@@ -9,15 +9,17 @@ var walker = require('async-walker'),
     config = require('../config/config'),
     chalk = require('chalk'),
     id3 = require('id3_reader'),
-    errorHandler = require('../app/controllers/errors.server.controller'),
-    tracks = require('../app/controllers/tracks.server.controller'),
+    //errorHandler = require('../app/controllers/errors.server.controller'),
+    //tracks = require('../app/controllers/tracks.server.controller'),
     mongoose = require('mongoose'),
-    Track = mongoose.model('Track');
+    Track = mongoose.model('Track'),
+    logger = require('../config/winston');
 
 /**
  * Module init function.
  */
 module.exports = (function () {
+
     console.log(chalk.blue('Walker started'));
     walker(config.walkPath, function(statObject) {
         var filePath = statObject.path;
@@ -46,10 +48,11 @@ module.exports = (function () {
                         }
                     ).exec(function (err) {
                         if (err) {
-                            return errorHandler.getErrorMessage(err);
+                            logger.error(err);
                         }
                     });
                 });
+
             });
         }
         return statObject;
