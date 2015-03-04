@@ -28,7 +28,7 @@ require('./config/passport')();
 
 //walker
 //require('./config/walk');
-require('./config/async-walker');
+require('./config/walker');
 
 // Start the app by listening on <port>
 app.listen(config.port);
