@@ -18,34 +18,34 @@ module.exports = function(grunt) {
 			serverViews: {
 				files: watchFiles.serverViews,
 				options: {
-					livereload: true
+					livereload: 35730
 				}
 			},
 			serverJS: {
 				files: watchFiles.serverJS,
 				tasks: ['jshint'],
 				options: {
-					livereload: true
+					livereload: 35730
 				}
 			},
 			clientViews: {
 				files: watchFiles.clientViews,
 				options: {
-					livereload: true,
+					livereload: 35730
 				}
 			},
 			clientJS: {
 				files: watchFiles.clientJS,
 				tasks: ['jshint'],
 				options: {
-					livereload: true
+					livereload: 35730
 				}
 			},
 			clientCSS: {
 				files: watchFiles.clientCSS,
 				tasks: ['csslint'],
 				options: {
-					livereload: true
+					livereload: 35730
 				}
 			}
 		},
@@ -59,7 +59,7 @@ module.exports = function(grunt) {
 		},
 		csslint: {
 			options: {
-				csslintrc: '.csslintrc',
+				csslintrc: '.csslintrc'
 			},
 			all: {
 				src: watchFiles.clientCSS
@@ -86,7 +86,7 @@ module.exports = function(grunt) {
 			dev: {
 				script: 'server.js',
 				options: {
-					nodeArgs: ['--debug'],
+					nodeArgs: ['--debug=5859'],
 					ext: 'js,html',
 					watch: watchFiles.serverViews.concat(watchFiles.serverJS)
 				}
