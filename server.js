@@ -26,8 +26,7 @@ var app = require('./config/express')(db);
 // Bootstrap passport config
 require('./config/passport')();
 
-//walker
-//require('./config/walk');
+// Start walker
 require('./config/walker');
 
 // Start the app by listening on <port>

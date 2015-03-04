@@ -1,8 +1,8 @@
 'use strict';
 
 module.exports = {
+    walkPath: '/Users/ksiabani/Music/Staging',
 	db: 'mongodb://localhost/men-dev',
-    walkPath: 'C:\\Users\\ksiabani\\Music',
 	app: {
 		title: 'MEN - Development Environment'
 	},
