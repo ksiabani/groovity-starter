@@ -1,6 +1,6 @@
 {
-  "name": "men",
-  "description": "Full-Stack JavaScript with MongoDB, Express, AngularJS, and Node.js",
+  "name": "groovity-starter",
+  "description": "",
   "version": "0.0.1",
   "author": "Kostas Siabanis",
   "engines": {

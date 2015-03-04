@@ -2,9 +2,9 @@
 
 module.exports = {
     walkPath: 'C:\\Users\\ksiabani\\Music',
-	db: 'mongodb://localhost/men-dev',
+	db: 'mongodb://localhost/groovity-starter-dev',
 	app: {
-		title: 'MEN - Development Environment'
+        title: 'The Groovity starter'
 	},
 	facebook: {
 		clientID: process.env.FACEBOOK_ID || 'APP_ID',
