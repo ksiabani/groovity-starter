@@ -45,6 +45,14 @@ var TrackSchema = new Schema({
         type: String,
         default: '',
         trim: true
+    },
+    released: {
+        type: Date,
+        default: Date.now
+    },
+    created: {
+        type: Date,
+        default: Date.now
     }
 });
 

@@ -37,6 +37,8 @@ module.exports = (function () {
                             publisher: meta.publisher,
                             genre: meta.genre,
                             year: meta.year,
+                            released: new Date(meta.rip_date),
+                            created: Date.now(),
                             path: filePath
                         },
                         {
