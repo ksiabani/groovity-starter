@@ -41,7 +41,12 @@ var TrackSchema = new Schema({
         default: '',
         trim: true
     },
-    path: {
+    source_path: {
+        type: String,
+        default: '',
+        trim: true
+    },
+    dest_path: {
         type: String,
         default: '',
         trim: true

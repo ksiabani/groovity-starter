@@ -30,7 +30,7 @@ module.exports = function () {
                     console.log(chalk.blue('Reading ' + filePath));
                     Track.findOneAndUpdate(
                         {
-                            path: filePath
+                            source_path: filePath
                         },
                         {
                             $setOnInsert: {
@@ -44,7 +44,8 @@ module.exports = function () {
                                 created: Date.now(),
                                 approved: false,
                                 copied: false,
-                                path: filePath
+                                source_path: filePath,
+                                dest_path: null
                             }
                         },
                         {
