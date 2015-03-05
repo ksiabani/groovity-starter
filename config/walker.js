@@ -18,7 +18,7 @@ var walker = require('async-walker'),
 /**
  * Module init function.
  */
-module.exports = (function () {
+module.exports = function () {
 
     console.log(chalk.blue('Walker started in ' + config.walkPath));
     walker(config.walkPath, function(statObject) {
@@ -56,10 +56,8 @@ module.exports = (function () {
                         }
                     });
                 });
-
             });
         }
         return statObject;
     });
-
-})();
+};

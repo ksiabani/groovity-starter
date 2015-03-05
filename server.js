@@ -5,9 +5,7 @@
 var init = require('./config/init')(),
 	config = require('./config/config'),
 	mongoose = require('mongoose'),
-    Track = mongoose.model('Track'),
-	chalk = require('chalk'),
-    copier = require('./config/copier');
+	chalk = require('chalk');
 
 /**
  * Main application entry file.
@@ -29,18 +27,16 @@ var app = require('./config/express')(db);
 require('./config/passport')();
 
 // Start walker
-//require('./config/walker');
+//require('./config/walker')();
 
-
+// Start walker
+require('./config/copier')();
 
 // Start the app by listening on <port>
 app.listen(config.port);
 
 // Expose app
 exports = module.exports = app;
-
-// Start copier
-copier();
 
 // Logging initialization
 console.log('MEAN.JS application started on port ' + config.port);
