@@ -20,7 +20,7 @@ var walker = require('async-walker'),
  */
 module.exports = (function () {
 
-    console.log(chalk.blue('Walker started'));
+    console.log(chalk.blue('Walker started in ' + config.walkPath));
     walker(config.walkPath, function(statObject) {
         var filePath = statObject.path;
         if (statObject.isFile && filePath.substr(-4) === '.mp3') {
@@ -36,10 +36,10 @@ module.exports = (function () {
                             artist: meta.artist,
                             title: meta.title,
                             album: meta.album,
-                            label: meta.publisher,
+                            label: meta.publisher || null,
                             genre: meta.genre,
-                            year: meta.year,
-                            released: new Date(meta.rip_date),
+                            year: meta.year || null,
+                            released: meta.rip_date? new Date(meta.rip_date): null,
                             created: Date.now(),
                             path: filePath
                         },
