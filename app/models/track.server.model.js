@@ -53,6 +53,14 @@ var TrackSchema = new Schema({
     created: {
         type: Date,
         default: Date.now
+    },
+    approved: {
+        type: Boolean,
+        default: false
+    },
+    copied: {
+        type: Boolean,
+        default: false
     }
 });
 
