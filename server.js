@@ -27,7 +27,10 @@ var app = require('./config/express')(db);
 require('./config/passport')();
 
 // Start walker
-require('./config/walker');
+//require('./config/walker')();
+
+// Start copier
+require('./config/copier')();
 
 // Start the app by listening on <port>
 app.listen(config.port);
@@ -36,4 +39,4 @@ app.listen(config.port);
 exports = module.exports = app;
 
 // Logging initialization
-console.log('MEAN.JS application started on port ' + config.port);
+console.log('Groovity Starter started on port ' + config.port);

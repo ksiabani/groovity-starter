@@ -18,7 +18,7 @@ var walker = require('async-walker'),
 /**
  * Module init function.
  */
-module.exports = (function () {
+module.exports = function () {
 
     console.log(chalk.blue('Walker started in ' + config.walkPath));
     walker(config.walkPath, function(statObject) {
@@ -30,18 +30,23 @@ module.exports = (function () {
                     console.log(chalk.blue('Reading ' + filePath));
                     Track.findOneAndUpdate(
                         {
-                            path: filePath
+                            source_path: filePath
                         },
                         {
-                            artist: meta.artist,
-                            title: meta.title,
-                            album: meta.album,
-                            label: meta.publisher || null,
-                            genre: meta.genre,
-                            year: meta.year || null,
-                            released: meta.rip_date? new Date(meta.rip_date): null,
-                            created: Date.now(),
-                            path: filePath
+                            $setOnInsert: {
+                                artist: meta.artist,
+                                title: meta.title,
+                                album: meta.album,
+                                label: meta.publisher,
+                                genre: meta.genre,
+                                year: meta.year,
+                                released: new Date(meta.rip_date),
+                                created: Date.now(),
+                                approved: false,
+                                copied: false,
+                                source_path: filePath,
+                                dest_path: null
+                            }
                         },
                         {
                             upsert: true
@@ -52,10 +57,8 @@ module.exports = (function () {
                         }
                     });
                 });
-
             });
         }
         return statObject;
     });
-
-})();
+};
