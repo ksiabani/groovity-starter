@@ -48,9 +48,12 @@ var TrackSchema = new Schema({
         type: Date,
         default: Date.now
     },
+    cover: {
+        type: String,
+        index: true
+    },
     source_path: {
         type: String,
-        default: '',
         trim: true,
         index: true
     },

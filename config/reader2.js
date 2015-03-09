@@ -6,7 +6,6 @@
 var walker = require('async-walker'),
     fs = require('fs'),
     config = require('../config/config'),
-    id3 = require('id3_reader'),
     mm= require('musicmetadata'),
     mongoose = require('mongoose'),
     Track = mongoose.model('Track'),
@@ -22,11 +21,17 @@ module.exports = function () {
     walker(config.walkPath, function(statObject) {
         var filePath = statObject.path;
         if (statObject.isFile && filePath.substr(-4) === '.mp3') {
-            var coverId = shortId.generate();
             // if you need dirname: path.dirname(filePath)
-            var file = fs.readFile(filePath, function(err, buffer) {
-                id3.read(buffer, function(err, meta) {
+            //var file = fs.readFile(filePath, function(err, buffer) {
+            //    id3.read(buffer, function(err, meta) {
+            // create a new parser from a node ReadStream
+            var parser = mm(fs.createReadStream(filePath), function (err, meta) {
+                if (err) throw err;
+                console.log(meta.artist, meta.title, meta.picture[0].format);
+            //});
+
                     logger.info('Reading ' + filePath);
+                    var coverId = shortId.generate();
                     Track.findOneAndUpdate(
                         {
                             source_path: filePath
@@ -50,21 +55,13 @@ module.exports = function () {
                             upsert: true
                         }
                     ).exec(function (err) {
-                        if (err) logger.error(err);
+                            if (err) logger.error(err);
+                            logger.info('Record was inserted');
 
-                    });
-                });
-            });
-
-            var parser = mm(fs.createReadStream(filePath), function (err, meta) {
-                if (err) logger.error(err);
-                fs.writeFile(config.destPath + coverId + '.jpg', meta.picture[0].data, function(err){
-                    if (err) logger.error(err);
-                });
+                        });
+                //});
             });
         }
         return statObject;
     });
 };
-
-
