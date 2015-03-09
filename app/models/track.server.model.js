@@ -14,17 +14,20 @@ var TrackSchema = new Schema({
 	artist: {
 		type: String,
 		default: '',
-		trim: true
+		trim: true,
+        required: true
 	},
     title: {
         type: String,
         default: '',
-        trim: true
+        trim: true,
+        required: true
     },
     album: {
         type: String,
         default: '',
-        trim: true
+        trim: true,
+        required: true
     },
     publisher: {
         type: String,
@@ -48,7 +51,8 @@ var TrackSchema = new Schema({
     source_path: {
         type: String,
         default: '',
-        trim: true
+        trim: true,
+        index: true
     },
     created: {
         type: Date,
@@ -59,5 +63,7 @@ var TrackSchema = new Schema({
         default: false
     }
 });
+
+TrackSchema.index({ artist: 1, title: 1, album: 1 });
 
 mongoose.model('Track', TrackSchema);

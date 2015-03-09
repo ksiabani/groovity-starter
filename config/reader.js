@@ -37,15 +37,13 @@ module.exports = function () {
                                 artist: meta.artist,
                                 title: meta.title,
                                 album: meta.album,
-                                label: meta.publisher,
-                                genre: meta.genre,
-                                year: meta.year,
-                                released: new Date(meta.rip_date),
-                                created: Date.now(),
-                                approved: false,
-                                copied: false,
+                                publisher: meta.publisher || null,
+                                genre: meta.genre || null,
+                                year: meta.year || null,
+                                released: new Date(meta.rip_date) || null,
                                 source_path: filePath,
-                                dest_path: null
+                                created: Date.now(),
+                                copied: false
                             }
                         },
                         {
