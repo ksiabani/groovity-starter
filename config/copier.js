@@ -6,7 +6,7 @@
 var fs = require('fs'),
     config = require('../config/config'),
     Track = require('mongoose').model('Track'),
-    logger = require('../config/winston'),
+    logger = require('../config/logger'),
     id3 = require('id3_reader');
 
 /**

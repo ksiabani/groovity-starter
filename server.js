@@ -27,10 +27,10 @@ var app = require('./config/express')(db);
 require('./config/passport')();
 
 // Start walker
-//require('./config/walker')();
+require('./config/reader')();
 
 // Start copier
-require('./config/copier')();
+//require('./config/copier')();
 
 // Start the app by listening on <port>
 app.listen(config.port);

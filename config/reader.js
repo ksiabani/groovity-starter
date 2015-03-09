@@ -13,7 +13,7 @@ var walker = require('async-walker'),
     //tracks = require('../app/controllers/tracks.server.controller'),
     mongoose = require('mongoose'),
     Track = mongoose.model('Track'),
-    logger = require('../config/winston');
+    logger = require('../config/logger');
 
 /**
  * Module init function.
