@@ -5,7 +5,7 @@
 var init = require('./config/init')(),
 	config = require('./config/config'),
 	mongoose = require('mongoose'),
-	chalk = require('chalk');
+    logger = require('./config/logger');
 
 /**
  * Main application entry file.
@@ -15,8 +15,8 @@ var init = require('./config/init')(),
 // Bootstrap db connection
 var db = mongoose.connect(config.db, function(err) {
 	if (err) {
-		console.error(chalk.red('Could not connect to MongoDB!'));
-		console.log(chalk.red(err));
+		logger.error('Could not connect to MongoDB!');
+		logger.error(err);
 	}
 });
 
@@ -39,4 +39,6 @@ app.listen(config.port);
 exports = module.exports = app;
 
 // Logging initialization
-console.log('Groovity Starter started on port ' + config.port);
+logger.info('Groovity Starter started on port ' + config.port);
+
+//TODO: truncate logs at startup

@@ -5,12 +5,8 @@
  */
 var walker = require('async-walker'),
     fs = require('fs'),
-    path = require('path'),
     config = require('../config/config'),
-    chalk = require('chalk'),
     id3 = require('id3_reader'),
-    //errorHandler = require('../app/controllers/errors.server.controller'),
-    //tracks = require('../app/controllers/tracks.server.controller'),
     mongoose = require('mongoose'),
     Track = mongoose.model('Track'),
     logger = require('../config/logger');
@@ -20,14 +16,14 @@ var walker = require('async-walker'),
  */
 module.exports = function () {
 
-    console.log(chalk.blue('Walker started in ' + config.walkPath));
+    logger.info('Reader started in ' + config.walkPath);
     walker(config.walkPath, function(statObject) {
         var filePath = statObject.path;
         if (statObject.isFile && filePath.substr(-4) === '.mp3') {
             // if you need dirname: path.dirname(filePath)
             var file = fs.readFile(filePath, function(err, buffer) {
                 id3.read(buffer, function(err, meta) {
-                    console.log(chalk.blue('Reading ' + filePath));
+                    logger.info('Reading ' + filePath);
                     Track.findOneAndUpdate(
                         {
                             source_path: filePath
@@ -50,9 +46,7 @@ module.exports = function () {
                             upsert: true
                         }
                     ).exec(function (err) {
-                        if (err) {
-                            logger.error(err);
-                        }
+                        if (err) logger.error(err);
                     });
                 });
             });
