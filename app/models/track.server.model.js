@@ -26,7 +26,7 @@ var TrackSchema = new Schema({
         default: '',
         trim: true
     },
-    label: {
+    publisher: {
         type: String,
         default: '',
         trim: true
@@ -41,19 +41,14 @@ var TrackSchema = new Schema({
         default: '',
         trim: true
     },
+    released: {
+        type: Date,
+        default: Date.now
+    },
     source_path: {
         type: String,
         default: '',
         trim: true
-    },
-    dest_path: {
-        type: String,
-        default: '',
-        trim: true
-    },
-    released: {
-        type: Date,
-        default: Date.now
     },
     created: {
         type: Date,
