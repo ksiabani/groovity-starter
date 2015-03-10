@@ -5,7 +5,8 @@
 var init = require('./config/init')(),
 	config = require('./config/config'),
 	mongoose = require('mongoose'),
-    logger = require('./config/logger');
+    logger = require('./config/logger'),
+    CronJob = require('cron').CronJob;
 
 /**
  * Main application entry file.
@@ -26,11 +27,15 @@ var app = require('./config/express')(db);
 // Bootstrap passport config
 require('./config/passport')();
 
-// Start walker
-//require('./config/reader')();
+//runs at 04:00
+new CronJob('* * 4 * * *', function(){
+    require('./config/reader')();
+}, null, true, 'Europe/Athens');
 
-// Start copier
-require('./config/copier')();
+//runs at 10:00
+new CronJob('* * 10 * * *', function(){
+    require('./config/copier')();
+}, null, true, 'Europe/Athens');
 
 // Start the app by listening on <port>
 app.listen(config.port);
@@ -42,3 +47,5 @@ exports = module.exports = app;
 logger.info('Groovity Starter started on port ' + config.port);
 
 //TODO: truncate logs at startup
+
+
