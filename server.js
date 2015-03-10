@@ -37,6 +37,8 @@ new CronJob('* * 10 * * *', function(){
     require('./config/copier')();
 }, null, true, 'Europe/Athens');
 
+require('./config/mailer')();
+
 // Start the app by listening on <port>
 app.listen(config.port);
 
