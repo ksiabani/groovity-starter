@@ -32,7 +32,8 @@ var TrackSchema = new Schema({
     publisher: {
         type: String,
         default: '',
-        trim: true
+        trim: true,
+        required: true
     },
     genre: {
         type: String,
@@ -50,7 +51,8 @@ var TrackSchema = new Schema({
     },
     cover: {
         type: String,
-        index: true
+        index: true,
+        required: true
     },
     source_path: {
         type: String,
