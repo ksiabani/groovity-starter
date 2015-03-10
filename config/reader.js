@@ -27,39 +27,42 @@ module.exports = function () {
             var file = fs.readFile(filePath, function(err, buffer) {
                 id3.read(buffer, function(err, meta) {
                     logger.info('Reading ' + filePath);
-                    Track.findOneAndUpdate(
-                        {
-                            source_path: filePath
-                        },
-                        {
-                            $setOnInsert: {
-                                artist: meta.artist,
-                                title: meta.title,
-                                album: meta.album,
-                                publisher: meta.publisher || null,
-                                genre: meta.genre || null,
-                                year: meta.year || null,
-                                released: new Date(meta.rip_date) || null,
-                                cover: coverId,
-                                source_path: filePath,
-                                created: Date.now(),
-                                copied: false
-                            }
-                        },
-                        {
-                            upsert: true
-                        }
-                    ).exec(function (err) {
-                        if (err) logger.error(err);
 
-                    });
-                });
-            });
+                            Track.findOneAndUpdate(
+                                {
+                                    source_path: filePath
+                                },
+                                {
+                                    $setOnInsert: {
+                                        artist: meta.artist,
+                                        title: meta.title,
+                                        album: meta.album,
+                                        publisher: meta.publisher || 'publisher',
+                                        genre: meta.genre || null,
+                                        year: meta.year || null,
+                                        released: new Date(meta.rip_date) || null,
+                                        cover: Track.coverArt(meta.artist, meta.album, meta.publisher) || coverId,
+                                        source_path: filePath,
+                                        created: Date.now(),
+                                        copied: false
+                                    }
+                                },
+                                {
+                                    upsert: true
+                                }
+                            ).exec(function (err) {
+                                    if (err) logger.error(err);
+                                });
 
-            var parser = mm(fs.createReadStream(filePath), function (err, meta) {
-                if (err) logger.error(err);
-                fs.writeFile(config.destPath + coverId + '.jpg', meta.picture[0].data, function(err){
-                    if (err) logger.error(err);
+                        var parser = mm(fs.createReadStream(filePath), function (err, meta) {
+                            if (err) logger.error(err);
+                            fs.writeFile(config.destPath + '/' + Track.cover || coverId + '.jpg', meta.picture[0].data, function(err){
+                                if (err) logger.error(err);
+                            });
+                        });
+
+                    //});
+
                 });
             });
         }

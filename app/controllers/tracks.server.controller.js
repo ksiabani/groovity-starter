@@ -117,3 +117,10 @@ exports.upsert = function (conditions, update) {
         }
     });
 };
+
+exports.coverArt = function(artist, album, publisher){
+    Track.findOne({ artist: artist, album: album, publisher: publisher }, 'cover').exec(function (err, track) {
+        if (err) return (err);
+            return track;
+        });
+};
