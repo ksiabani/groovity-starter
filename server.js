@@ -28,14 +28,14 @@ var app = require('./config/express')(db);
 require('./config/passport')();
 
 //runs at 04:00
-new CronJob('* * 4 * * *', function(){
-    require('./config/reader')();
-}, null, true, 'Europe/Athens');
+//new CronJob('* * 4 * * *', function(){
+    require('./config/reader2')();
+//}, null, true, 'Europe/Athens');
 
 //runs at 10:00
-new CronJob('* * 10 * * *', function(){
-    require('./config/copier')();
-}, null, true, 'Europe/Athens');
+//new CronJob('* * 10 * * *', function(){
+//    require('./config/copier')();
+//}, null, true, 'Europe/Athens');
 
 require('./config/mailer')();
 
