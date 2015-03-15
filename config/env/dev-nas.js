@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-    walkPath: '/volume1/RaiNAS/Music',
+    walkPath: '/volume1/RaiNAS/music/offline/2015',
     destPath: '/volume1/RaiNAS/Music/Playing',
 	db: 'mongodb://192.168.1.105/groovity-starter-nas',
 	app: {

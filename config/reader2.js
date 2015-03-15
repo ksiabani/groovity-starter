@@ -22,7 +22,7 @@ var fs = require('fs'),
  */
 module.exports = function () {
 
-    var stream = readdirp({ root: config.walkPath, fileFilter: '*one.mp3' });
+    var stream = readdirp({ root: config.walkPath, fileFilter: '*.mp3' });
     stream
         .on('warn', function (err) {
             console.error('non-fatal error', err);
@@ -31,7 +31,7 @@ module.exports = function () {
         .on('error', function (err) { console.error('fatal error', err); })
         .pipe(es.mapSync(function (entry) {
             //return { path: entry.path, size: entry.stat.size };
-            fs.createReadStream(config.walkPath+'\\'+entry.path)
+            fs.createReadStream(config.walkPath+'/'+entry.path)
                 .pipe(new ID3())
                 .on('data', function(tag){
                     console.log( tag.type, tag.value );
