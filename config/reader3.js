@@ -11,15 +11,13 @@ var fs = require('fs'),
     readdirp = require('readdirp'),
     config = require('../config/config'),
     ID3 = require('id3v2-parser'),
-    id3 = require('id3_reader'),
-    mm = require('musicmetadata'),
-    //mongoose = require('mongoose'),
-    //Track = mongoose.model('Track'),
-    //logger = require('../config/logger'),
-    //md5 = require('MD5'),
-    es = require('event-stream'),
-    async = require('async');
-
+    mongoose = require('mongoose'),
+    Track = mongoose.model('Track'),
+    logger = require('../config/logger'),
+    md5 = require('MD5'),
+    //es = require('event-stream'),
+    async = require('async'),
+    S = require('string');
 
 /**
  * Module init function.
@@ -33,6 +31,7 @@ module.exports = function () {
             });
         }
         var myFiles = [];
+
         res.files.forEach(function(file){
             myFiles.push(file.fullPath);
         });
@@ -43,36 +42,61 @@ module.exports = function () {
 
             // Perform operation on file here.
             console.log('Processing file ' + file);
-
+            var meta = { cover:{} };
             //id3v1/v2
             fs.createReadStream(file)
                 .pipe(new ID3())
                 .on('data', function(tag){
-                    console.log( tag.type, tag.value );
+                    //console.log(tag);
+                    if(tag.type === 'TPE1'){ meta.artist = tag.value; }
+                    if(tag.type === 'TALB'){ meta.album = tag.value; }
+                    if(tag.type === 'TIT2'){ meta.title = tag.value; }
+                    if(tag.type === 'TYER'){ meta.year = tag.value; }
+                    if(tag.type === 'TCON'){ meta.genre = tag.value; }
+                    if(tag.type === 'TPUB'){ meta.publisher = tag.value; }
+                    if(tag.type === 'APIC'){
+                        meta.cover.mime = S(tag.value.mime).chompLeft('image/').s;
+                    }
+                    if(tag.type === 'APIC'){ meta.cover.type = tag.value.type; }
+                    if(tag.type === 'APIC'){ meta.cover.data = tag.value.data; }
+                    if(meta.cover.mime){ meta.cover.name = md5(meta.artist + meta.album + meta.publisher) + '.' + meta.cover.mime;}
+                    if(tag.type === 'TXXX' && S(tag.value).left(9).s === 'Rip date/' ){
+                        meta.released = S(tag.value).chompLeft('Rip date/').s;
+                    }
                 })
                 .on('end', function(){
+                    console.log(meta);
                     console.log( 'the end' );
+                    //if(!meta.cover) {
+                    //    var cover = md5(meta.artist + meta.album + meta.publisher) + '.' + meta.cover.type;
+                    //}
+                    Track.findOneAndUpdate(
+                        {
+                            source: file
+                        },
+                        {
+                            $setOnInsert: {
+                                artist: meta.artist,
+                                title: meta.title,
+                                album: meta.album,
+                                publisher: meta.publisher,
+                                genre: meta.genre || null,
+                                year: meta.year || null,
+                                released: new Date(meta.released) || null,
+                                cover: meta.cover.name || null,
+                                source: file,
+                                created: Date.now(),
+                                copied: false
+                            }
+                        },
+                        {
+                            upsert: true
+                        }
+                    ).exec(function (err) {
+                            if (err) logger.error(err);
+                        });
                     callback();
                 });
-
-
-
-            //id3_reader
-            //id3.read(file, function(err, meta) {
-            //    if (err) console.log(err);
-            //    console.log(meta, file);
-            //
-            //});
-            //console.log('File processed');
-            //callback();
-
-            //mm
-            //var parser = mm(fs.createReadStream(file), function (err, metadata) {
-            //    if (err) console.log(err);
-            //    console.log(metadata);
-            //    console.log('File processed');
-            //    callback();
-            //});
 
 
         }, function(err){
