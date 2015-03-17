@@ -15,7 +15,7 @@ var fs = require('fs'),
  * Define copier
  */
 var copier = function() {
-    Track.find({ copied: false }, {source_path: 1, cover: 1}).exec( function(err, tracks) {
+    Track.find({ copied: false }, {source: 1, cover: 1}).exec( function(err, tracks) {
         if (err) logger.error(err);
         JSON.parse(JSON.stringify(tracks)).forEach(function(track) {
 

@@ -4,7 +4,6 @@
  * Module dependencies.
  */
 var fs = require('fs'),
-    path = require('path'),
     readdirp = require('readdirp'),
     config = require('../config/config'),
     ID3 = require('id3v2-parser'),
