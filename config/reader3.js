@@ -44,7 +44,9 @@ module.exports = function () {
             console.log('Processing file ' + file);
             var meta = { cover:{} };
             //id3v1/v2
-            fs.createReadStream(file)
+            var stream = fs.createReadStream(file);
+
+            stream
                 .pipe(new ID3())
                 .on('data', function(tag){
                     //console.log(tag);
@@ -67,6 +69,7 @@ module.exports = function () {
                 .on('end', function(){
                     console.log(meta);
                     console.log( 'the end' );
+                    stream.destroy();
                     //if(!meta.cover) {
                     //    var cover = md5(meta.artist + meta.album + meta.publisher) + '.' + meta.cover.type;
                     //}
