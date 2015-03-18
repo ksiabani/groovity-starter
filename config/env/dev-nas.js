@@ -2,7 +2,8 @@
 
 module.exports = {
     walkPath: '/volume1/RaiNAS/music/offline/2015',
-    destPath: '/volume1/RaiNAS/Music/Playing',
+    destPath: '/volume1/RaiNAS/Music/Playing/',
+    artPath: 'C:\\Temp\\covers',
 	db: 'mongodb://192.168.1.105/groovity-starter-nas',
 	app: {
         title: 'The Groovity starter'

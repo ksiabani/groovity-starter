@@ -2,7 +2,8 @@
 
 module.exports = {
     walkPath: 'C:\\Users\\ksiabani\\Music',
-    destPath: 'C:\\Temp\\',
+    destPath: 'C:\\Temp\\copies\\',
+    artPath: 'C:\\Temp\\covers',
 	db: 'mongodb://localhost/groovity-starter-dev',
 	app: {
         title: 'The Groovity starter'

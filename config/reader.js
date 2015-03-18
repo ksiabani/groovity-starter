@@ -22,7 +22,7 @@ module.exports = function () {
     readdirp({ root: config.walkPath, fileFilter: '*.mp3' }, function (errors, res) {
         if (errors) {
             errors.forEach(function (err) {
-                console.error('Error: ', err);
+                logger.error('Error while reading source folder', '\n', err);
             });
         }
         var myFiles = [];
@@ -33,7 +33,7 @@ module.exports = function () {
 
         async.eachSeries(myFiles, function(file, callback) {
             logger.info('Processing file ' + file);
-            var meta = { cover:{} };
+            var meta = {};
             var stream = fs.createReadStream(file);
             stream
                 .pipe(new ID3())
@@ -44,12 +44,9 @@ module.exports = function () {
                     if(tag.type === 'TYER'){ meta.year = tag.value; }
                     if(tag.type === 'TCON'){ meta.genre = tag.value; }
                     if(tag.type === 'TPUB'){ meta.publisher = tag.value; }
-                    if(tag.type === 'APIC'){
-                        meta.cover.mime = S(tag.value.mime).chompLeft('image/').s;
+                    if(tag.type === 'APIC' && tag.value.type === 'Cover (front)'){
+                        meta.cover = md5(meta.artist + meta.album + meta.publisher) + '.' + S(tag.value.mime).chompLeft('image/').s;
                     }
-                    if(tag.type === 'APIC'){ meta.cover.type = tag.value.type; }
-                    if(tag.type === 'APIC'){ meta.cover.data = tag.value.data; }
-                    if(meta.cover.mime){ meta.cover.name = md5(meta.artist + meta.album + meta.publisher) + '.' + meta.cover.mime;}
                     if(tag.type === 'TXXX' && S(tag.value).left(9).s === 'Rip date/' ){
                         meta.released = S(tag.value).chompLeft('Rip date/').s;
                     }
@@ -70,7 +67,7 @@ module.exports = function () {
                                 genre: meta.genre || null,
                                 year: meta.year || null,
                                 released: new Date(meta.released) || null,
-                                cover: meta.cover.name || null,
+                                cover: meta.cover || null,
                                 source: file,
                                 created: Date.now(),
                                 copied: false
