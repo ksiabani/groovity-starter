@@ -42,8 +42,6 @@ var app = require('./config/express')(db);
 
 require('./config/copier2')();
 
-
-
 // Start the app by listening on <port>
 //app.listen(config.port);
 
