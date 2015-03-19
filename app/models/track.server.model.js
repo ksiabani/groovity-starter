@@ -54,7 +54,7 @@ var TrackSchema = new Schema({
         index: true,
         required: true
     },
-    source_path: {
+    source: {
         type: String,
         trim: true,
         index: true
