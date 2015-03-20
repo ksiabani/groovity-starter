@@ -9,11 +9,13 @@ var fs = require('fs'),
     ID3 = require('id3v2-parser'),
     mongoose = require('mongoose'),
     Track = mongoose.model('Track'),
-    //logger = require('../config/logger'),
+    logger = require('../config/logger'),
     md5 = require('MD5'),
     async = require('async'),
     S = require('string'),
-    fsSync = require('fs-sync');
+    fsSync = require('fs-sync'),
+    sanitize = require('sanitize-filename'),
+    child_process = require('child_process');
 
 /**
  * Module init function.
@@ -39,6 +41,7 @@ module.exports = function () {
       async.waterfall([
         function(callback) {
             Track.find({ copied: false }, {source: 1, album: 1, artist: 1, title: 1, cover: 1}).exec( function(err, tracks) {
+            //Track.find({ album: /Reference/ }, {source: 1, album: 1, artist: 1, title: 1, cover: 1}).exec( function(err, tracks) {
                 //if (err) logger.error(err);
                 callback(null, tracks);
             });
@@ -50,6 +53,7 @@ module.exports = function () {
         //        stream
         //            .pipe(new ID3())
         //            .on('data', function(tag){
+        //                console.log(tag);
         //                if(tag.type === 'APIC' && tag.value.type === 'Cover (front)'){
         //                    fs.writeFile(config.artPath + '/' + track.cover, tag.value.data, function(err){
         //                        if (err) logger.error(err);
@@ -65,8 +69,10 @@ module.exports = function () {
         //},
         function(tracks, callback) {
             JSON.parse(JSON.stringify(tracks)).forEach(function(track) {
-                console.log('Copying', track.source)
-                fsSync.copy(track.source, config.destPath + track.album.replace(/ /g, '_') + '-' + track.artist.replace(/ /g,'_') + '-' + track.title.replace(/ /g,'_') + '.mp3');
+                //fsSync.copy(track.source, config.destPath + sanitize(track.album.replace(/ /g, '_') + '-' + track.artist.replace(/ /g,'_') + '-' + track.title.replace(/ /g,'_')) + '.mp3');
+                var source = track.source;
+                var target = config.destPath + sanitize(track.album.replace(/ /g, '_') + '-' + track.artist.replace(/ /g,'_') + '-' + track.title.replace(/ /g,'_')) + '.mp3';
+                child_process.execFile('/bin/cp', [source, target]);
 
                 //var readable = fs.createReadStream(track.source);
                 //var writeable =  fs.createWriteStream(config.destPath + track.album.replace(/ /g, '_') + '-' + track.artist.replace(/ /g,'_') + '-' + track.title.replace(/ /g,'_') + '.mp3');
