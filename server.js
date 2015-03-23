@@ -40,7 +40,7 @@ var app = require('./config/express')(db);
 
 //require('./config/mailer')();
 
-require('./config/copier2')();
+require('./config/copier')();
 
 
 // Start the app by listening on <port>
