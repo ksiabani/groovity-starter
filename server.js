@@ -4,9 +4,9 @@
  */
 var init = require('./config/init')(),
 	config = require('./config/config'),
-	mongoose = require('mongoose');
-    //logger = require('./config/logger'),
-    //CronJob = require('cron').CronJob;
+	mongoose = require('mongoose'),
+    logger = require('./config/logger'),
+    CronJob = require('cron').CronJob;
 
 /**
  * Main application entry file.
@@ -17,8 +17,8 @@ var init = require('./config/init')(),
 var db = mongoose.connect(config.db, function(err) {
 	if (err) {
         console.log('');
-		//logger.error('Could not connect to MongoDB!');
-		//logger.error(err);
+		logger.error('Could not connect to MongoDB!');
+		logger.error(err);
 	}
 });
 
@@ -28,20 +28,26 @@ var app = require('./config/express')(db);
 // Bootstrap passport config
 //require('./config/passport')();
 
-//runs at 04:00
-//new CronJob('* * 4 * * *', function(){
-//    require('./config/reader2')();
-//}, null, true, 'Europe/Athens');
+/* Cron ranges:
+ Seconds: 0-59
+ Minutes: 0-59
+ Hours: 0-23
+ Day of Month: 1-31
+ Months: 0-11
+ Day of Week: 0-6
+ */
 
-//runs at 10:00
-//new CronJob('* * 10 * * *', function(){
-//    require('./config/copier')();
-//}, null, true, 'Europe/Athens');
+//run at 04:00
+new CronJob('* 47 15 * * *', function(){
+    require('./config/reader')();
+}, null, true, 'Europe/Athens');
+
+//run at 10:00
+new CronJob('* 41 19 * * *', function(){
+    require('./config/copier')();
+}, null, true, 'Europe/Athens');
 
 //require('./config/mailer')();
-
-require('./config/copier')();
-
 
 // Start the app by listening on <port>
 //app.listen(config.port);
@@ -50,8 +56,6 @@ require('./config/copier')();
 exports = module.exports = app;
 
 // Logging initialization
-//logger.info('Groovity Starter started on port ' + config.port);
+logger.info('Groovity Starter started on port ' + config.port);
 
 //TODO: truncate logs at startup
-
-
