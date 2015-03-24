@@ -52,7 +52,7 @@ module.exports = function () {
                     title: 1,
                     cover: 1
                 })
-                .limit(1)
+                //.limit(1)
                 .exec(function (err, tracks) {
                     if (err) logger.error(err);
                     callback(null, tracks);
@@ -65,19 +65,19 @@ module.exports = function () {
             async.eachSeries(tracksArray, function (track, callback2) {
                 //ffmpeg -i one.mp3 file.jpg
                 //var source = track.source;
-                //var target = config.destPath + sanitize(track.album.replace(/ /g, '_') + '-' + track.artist.replace(/ /g, '_') + '-' + track.title.replace(/ /g, '_')) + '.mp3';
+                var target_320 = config.destPath + sanitize(track.album.replace(/ /g, '_') + '-' + track.artist.replace(/ /g, '_') + '-' + track.title.replace(/ /g, '_')) + '_320.mp3';
+                var target_128 = config.destPath + sanitize(track.album.replace(/ /g, '_') + '-' + track.artist.replace(/ /g, '_') + '-' + track.title.replace(/ /g, '_')) + '_128.mp3';
                 //var ffmpeg = execFile('ffmpeg', ['-y', '-i', track.source, config.artPath + '/' + track.cover]);
-                //var ffmpeg = execFile('ffmpeg', ['-y', '-i', track.source, '-c:a', 'copy', config.artPath + '/' + 'out.mp3']);
+                //osx
+                var ffmpeg = execFile('ffmpeg', [
                 //windows
-                var ffmpeg = spawn(process.env.comspec, ['/c',
-                    'C:\\Temp\\ffmpeg\\bin\\ffmpeg',                        //command
-                    '-y',                                                   //global switches
-                    '-i', track.source,                                     //input
-                    '-c:a', 'copy', config.artPath + '/' + 'out1.mp3',      //first output, just copy the file
-                    '-metadata', 'track= ', 'encoded_by= ', 'Supplier= ', 'Ripping tool= ', 'encoder= ', //set metadata 'Catalog \#= ', 'Rip date= ', 'Release type= ', 'Source= ',
-                    '-b:a', '128k', '-f', 'mp3', config.artPath + '/' + 'out2.mp3', //second output, converting to 128
-                    '-f', 'ffmetadata', config.artPath + '/' +'metadata.txt',       //extract metadata to a file
-                    config.artPath + '/' + track.cover                              //extract artwork
+                //var ffmpeg = spawn(process.env.comspec, ['/c', 'C:\\Temp\\ffmpeg\\bin\\ffmpeg',
+                    '-y',                                                                                           //global switches
+                    '-i', track.source,                                                                             //input
+                    '-c:a', 'copy', target_320,                                           //first output, just copy the file
+                    //'-metadata', 'track= ', 'encoded_by= ', 'Supplier= ', 'Ripping tool= ', 'encoder= ',          //set metadata 'Catalog \#= ', 'Rip date= ', 'Release type= ', 'Source= ',
+                    '-ar', '44100', '-ab', '128k', '-f', 'mp3', target_128,                                  //second output, converting to 128
+                    //'-f', 'ffmetadata', config.artPath + '/' +'metadata.txt'                                   //extract metadata to a file
                 ]);
                 //ffmpeg -i son_origine.avi -vn -ar 44100 -ac 2 -ab 192 -f mp3 son_final.mp3
                 //ffmpeg -i original.mp4 -metadata title="my title" -c copy -y /tmp/tmp.mp4 && ffmpeg -i /tmp/tmp.mp4 -c copy -y original.mp4
