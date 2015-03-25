@@ -20,10 +20,11 @@ var fs = require('fs'),
 module.exports = function () {
 
     async.waterfall([
+
         function (callback) {
             var mp3Files = [];
-            logger.info('Reading source folder', config.sourcePath, 'for mp3 files');
-            readdirp({root: config.sourcePath, fileFilter: '*.mp3'}, function (errors, res) {
+            logger.info('Reading source folder', config.srcPath, 'for mp3 files');
+            readdirp({root: config.srcPath, fileFilter: '*.mp3'}, function (errors, res) {
                 if (errors) {
                     errors.forEach(function (err) {
                         logger.error('Error while reading source folder:', '\n', err);
@@ -36,9 +37,10 @@ module.exports = function () {
                 callback(null, mp3Files);
             });
         },
+
         function (mp3Files, callback) {
 
-            async.eachSeries(mp3Files, function (file, callback) {
+            async.eachSeries(mp3Files, function (file, seriesCb) {
                 logger.info('Processing file ' + file);
                 var meta = {};
                 var stream = fs.createReadStream(file);
@@ -69,6 +71,7 @@ module.exports = function () {
                         if (tag.type === 'TXXX' && S(tag.value).left(9).s === 'Rip date/') {
                             meta.released = S(tag.value).chompLeft('Rip date/').s;
                         }
+                        meta.filename_128 = md5(meta.album + meta.artist + meta.title + '128') + '.mp3';
                     })
                     .on('end', function () {
                         logger.info('Finished reading metadata');
@@ -89,6 +92,7 @@ module.exports = function () {
                                     released: new Date(meta.released) || null,
                                     cover: meta.cover || null,
                                     source: file,
+                                    filename_128: meta.filename_128,
                                     created: Date.now(),
                                     copied: false
                                 }
@@ -98,8 +102,8 @@ module.exports = function () {
                             }
                         ).exec(function (err) {
                                 if (err) logger.error('Error while storing metadata for file', file, ': \n', err);
-                                callback();
                             });
+                        seriesCb();
                     });
 
             }, function (err) {
@@ -110,7 +114,9 @@ module.exports = function () {
                     callback(null, mp3Files);
                 }
             });
+
         }
+
     ], function (err, mp3Files) {
         if (err) {
             logger.error('Reader has encountered an error:', '\n', err);
@@ -118,6 +124,7 @@ module.exports = function () {
             logger.info('Reader has finished. ' + mp3Files.length + ' track(s) were scanned and added to database');
         }
     });
+
 };
 
 //TODO: Review the fields that are being updated

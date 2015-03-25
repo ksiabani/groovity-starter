@@ -59,6 +59,11 @@ var TrackSchema = new Schema({
         trim: true,
         index: true
     },
+    filename_128: {
+        type: String,
+        trim: true,
+        index: true
+    },
     created: {
         type: Date,
         default: Date.now

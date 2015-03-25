@@ -30,9 +30,10 @@ module.exports = function () {
                     title: 1,
                     genre: 1,
                     year: 1,
-                    cover: 1
+                    cover: 1,
+                    filename_128: 1
                 })
-                //.limit(2)
+                .limit(10)
                 .exec(function (err, tracks) {
                     if (err) {
                         logger.error('Error while querying database:', '\n', err);
@@ -50,17 +51,19 @@ module.exports = function () {
             var Tracks = JSON.parse(JSON.stringify(tracks));
             async.eachSeries(Tracks, function (track, seriesCb) {
                 //osx & nas
-                //var ffmpeg = execFile('ffmpeg', [
+                var ffmpeg = execFile('ffmpeg', [
                 //windows
-                var ffmpeg = spawn(process.env.comspec, ['/c', 'C:\\Temp\\ffmpeg\\bin\\ffmpeg',
+                //var ffmpeg = spawn(process.env.comspec, ['/c', 'C:\\Temp\\ffmpeg\\bin\\ffmpeg',
                     '-y', /* ovewrite existing files */
                     '-i', track.source, /* source */
                     '-map_metadata', '0', '-id3v2_version', '3', /* keep metadata */
                     '-metadata', 'track=', '-metadata', 'encoded_by=', '-metadata', 'Supplier=', '-metadata', 'Ripping tool=',
                     '-metadata', 'encoder=', '-metadata', 'Catalog #=', '-metadata', 'Rip date=', '-metadata', 'Release type=',
                     '-metadata', 'Source=', '-metadata', 'Publisher=', '-metadata', 'TDAT=', '-metadata', 'Comment=', '-metadata', 'Track Number=',
-                    '-ar', '44100', '-ab', '128k', '-f', 'mp3', config.destPath + md5(track.album + track.artist + track.title + '128') + '.mp3' /* convert to 128 */
+                    '-codec:a', 'libmp3lame', '-b:a', '128k', config.destPath + track.filename_128
+                    //'-ab', '128k', config.destPath + track.filename_128 /* convert to 128 */
                 ]);
+                //ffmpeg -i input.wav -codec:a libmp3lame -b:a 128k output.mp3
 
                 ffmpeg.stdout.on('data', function (data) {
                     logger.info(data.toString());
