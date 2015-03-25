@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-    sourcePath: 'C:\\Users\\ksiabani\\Music\\offline\\2015',
+    srcPath: 'C:\\Users\\ksiabani\\Music\\offline\\2015',
     destPath: 'C:\\Users\\ksiabani\\Music\\live\\2015\\',
     artPath: 'C:\\Temp\\covers',
 	db: 'mongodb://localhost/groovity-starter-dev',

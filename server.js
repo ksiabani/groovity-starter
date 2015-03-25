@@ -6,7 +6,9 @@ var init = require('./config/init')(),
 	config = require('./config/config'),
 	mongoose = require('mongoose'),
     logger = require('./config/logger'),
-    CronJob = require('cron').CronJob;
+    CronJob = require('cron').CronJob
+    //mailer = require('./config/mailer')
+    ;
 
 /**
  * Main application entry file.
@@ -37,17 +39,23 @@ var app = require('./config/express')(db);
  Day of Week: 0-6
  */
 
+//run at 00:00
+//new CronJob('* * 0 * * *', function(){
+    require('./config/downloader')();
+//}, null, true, 'Europe/Athens');
+
 //run at 04:00
-new CronJob('* 47 15 * * *', function(){
-    require('./config/reader')();
-}, null, true, 'Europe/Athens');
+//new CronJob('* 53 18 * * *', function(){
+//    require('./config/reader')();
+//}, null, true, 'Europe/Athens');
 
 //run at 10:00
-new CronJob('* 41 19 * * *', function(){
-    require('./config/copier')();
-}, null, true, 'Europe/Athens');
+//new CronJob('* 41 19 * * *', function(){
+//    require('./config/copier')();
+//}, null, true, 'Europe/Athens');
 
-//require('./config/mailer')();
+//var body = '# Hello world!\n\nThis is a **markdown** message';
+//mailer('this is the subject', body);
 
 // Start the app by listening on <port>
 //app.listen(config.port);
