@@ -17,11 +17,7 @@ var init = require('./config/init')(),
 
 // Bootstrap db connection
 var db = mongoose.connect(config.db, function(err) {
-	if (err) {
-        console.log('');
-		logger.error('Could not connect to MongoDB!');
-		logger.error(err);
-	}
+	if (err) logger.error(err);
 });
 
 // Init the express application
@@ -41,7 +37,7 @@ var app = require('./config/express')(db);
 
 //run at 00:00
 //new CronJob('* * 0 * * *', function(){
-    require('./config/downloader')();
+//    require('./config/downloader')();
 //}, null, true, 'Europe/Athens');
 
 //run at 04:00
@@ -51,7 +47,7 @@ var app = require('./config/express')(db);
 
 //run at 10:00
 //new CronJob('* 41 19 * * *', function(){
-//    require('./config/copier')();
+    require('./config/copier')();
 //}, null, true, 'Europe/Athens');
 
 //var body = '# Hello world!\n\nThis is a **markdown** message';
