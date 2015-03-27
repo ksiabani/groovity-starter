@@ -10,9 +10,11 @@ var fs = require('fs'),
     mongoose = require('mongoose'),
     Track = mongoose.model('Track'),
     logger = require('../config/logger'),
+    mailer = require('../config/mailer'),
     md5 = require('MD5'),
     async = require('async'),
-    S = require('string');
+    S = require('string'),
+    tableify = require('tableify');
 
 /**
  * Module init function.
@@ -122,6 +124,32 @@ module.exports = function () {
             logger.error('Reader has encountered an error:', '\n', err);
         } else {
             logger.info('Reader has finished. ' + mp3Files.length + ' track(s) were scanned and added to database');
+            Track
+                .find(
+                {
+                    source: {
+                        $in: mp3Files
+                    }
+                },
+                {
+                    _id:0,
+                    artist: 1,
+                    title: 1,
+                    album: 1,
+                    publisher: 1,
+                    genre: 1,
+                    year: 1,
+                    released: 1
+                }
+            )
+                .exec(function (err, tracks) {
+                    if (err) {
+                        logger.error('Error while reading database:', '\n', err);
+                    }
+                    else {
+                        mailer('GS: Reader has found ' + mp3Files.length + ' tracks', tableify(JSON.parse(JSON.stringify(tracks))));
+                    }
+                });
         }
     });
 

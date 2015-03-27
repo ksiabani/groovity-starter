@@ -2,7 +2,7 @@
 
 var nodemailer = require('nodemailer');
 
-var mailer = function (mailerSubject, mailerText) {
+var mailer = function (mailerSubject, mailerHtml) {
 
 
     var nodemailer = require('nodemailer');
@@ -19,8 +19,8 @@ var mailer = function (mailerSubject, mailerText) {
         from: 'Groovity Starter ☆ <kostas.siabanis@gmail.com>', // sender address
         to: 'kostas.siabanis@gmail.com', // list of receivers
         subject: mailerSubject, // Subject line
-        text: mailerText // plaintext body
-        //html: '<b>Hello world ✔</b>' // html body
+        //text: mailerText // plaintext body
+        html: mailerHtml // html body
     };
 
     // send mail with defined transport object

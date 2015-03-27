@@ -42,12 +42,12 @@ var app = require('./config/express')(db);
 
 //run at 04:00
 //new CronJob('* 53 18 * * *', function(){
-//    require('./config/reader')();
+    require('./config/reader')();
 //}, null, true, 'Europe/Athens');
 
 //run at 10:00
 //new CronJob('* 41 19 * * *', function(){
-    require('./config/copier')();
+//    require('./config/copier')();
 //}, null, true, 'Europe/Athens');
 
 //var body = '# Hello world!\n\nThis is a **markdown** message';

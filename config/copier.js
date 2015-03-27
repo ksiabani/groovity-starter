@@ -47,7 +47,7 @@ module.exports = function () {
         function (tracks, callback) {
 
             var exitCode = 0;
-            var convertedTracks = [];
+            var copiedTracks = [];
             var Tracks = JSON.parse(JSON.stringify(tracks));
             async.eachSeries(Tracks, function (track, seriesCb) {
                 //osx & nas
@@ -59,8 +59,8 @@ module.exports = function () {
                     '-map_metadata', '0', '-id3v2_version', '3', /* keep metadata */
                     '-metadata', 'track=', '-metadata', 'encoded_by=', '-metadata', 'Supplier=', '-metadata', 'Ripping tool=',
                     '-metadata', 'encoder=', '-metadata', 'Catalog #=', '-metadata', 'Rip date=', '-metadata', 'Release type=',
-                    '-metadata', 'Source=', '-metadata', 'Publisher=', '-metadata', 'TDAT=', '-metadata', 'Comment=', '-metadata', 'Track Number=',
-                    '-vn', '-b:a', '128k', '-c:a', 'libmp3lame', '-f', 'mp3', config.destPath + track.filename_128
+                    '-metadata', 'Source=', '-metadata', 'Publisher=', '-metadata', 'Comment=', '-metadata', 'Track Number=',
+                    '-b:a', '128k', '-c:a', 'libmp3lame', '-f', 'mp3', config.destPath + track.filename_128
                     //'-codec:a', 'libmp3lame', '-b:a', '128k', config.destPath + track.filename_128
                     //'-ab', '128k', config.destPath + track.filename_128 /* convert to 128 */
                 ]);
@@ -78,7 +78,7 @@ module.exports = function () {
                 ffmpeg.on('close', function (code) {
                     exitCode += code;
                     if (code === 0) {
-                        convertedTracks.push(track.source.toString());
+                        copiedTracks.push(track.source.toString());
                     }
                     seriesCb();
                 });
@@ -93,29 +93,29 @@ module.exports = function () {
                     else {
                         logger.error('Not all files have been processed successfully');
                     }
-                    callback(null, Tracks, convertedTracks);
+                    callback(null, Tracks, copiedTracks);
                 }
             });
         },
 
-        function (Tracks, convertedTracks, callback) {
+        function (Tracks, copiedTracks, callback) {
             Track
-                .update({source: {$in: convertedTracks}}, {copied: true}, {multi: true})
+                .update({source: {$in: copiedTracks}}, {copied: true}, {multi: true})
                 .exec(function (err) {
                     if (err) {
                         logger.error('Error while updating database:', '\n', err);
                     }
                     else {
-                        callback(null, Tracks, convertedTracks);
+                        callback(null, Tracks, copiedTracks);
                     }
                 });
         }
 
-    ], function (err, Tracks, convertedTracks) {
+    ], function (err, Tracks, copiedTracks) {
         if (err) {
             logger.error('Copier has encountered an error:', '\n', err);
         } else {
-            logger.info('Copier has finished. ' + convertedTracks.length + ' of ' + Tracks.length + ' track(s) were copied');
+            logger.info('Copier has finished. ' + copiedTracks.length + ' of ' + Tracks.length + ' track(s) were copied');
         }
     });
 };
