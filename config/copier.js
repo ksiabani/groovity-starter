@@ -33,7 +33,7 @@ module.exports = function () {
                     cover: 1,
                     filename_128: 1
                 })
-                .limit(2)
+                //.limit(2)
                 .exec(function (err, tracks) {
                     if (err) {
                         logger.error('Error while querying database:', '\n', err);
@@ -47,13 +47,13 @@ module.exports = function () {
         function (tracks, callback) {
 
             var exitCode = 0;
-            var copiedTracks = [];
+            //var copiedTracks = [];
             var Tracks = JSON.parse(JSON.stringify(tracks));
             async.eachSeries(Tracks, function (track, seriesCb) {
                 //osx & nas
-                //var ffmpeg = execFile('ffmpeg', [
+                var ffmpeg = execFile('ffmpeg', [
                 //windows
-                var ffmpeg = spawn(process.env.comspec, ['/c', 'C:\\Temp\\ffmpeg\\bin\\ffmpeg',
+                //var ffmpeg = spawn(process.env.comspec, ['/c', 'C:\\Temp\\ffmpeg\\bin\\ffmpeg',
                     '-y', /* ovewrite existing files */
                     '-i', track.source, /* source */
                     '-map_metadata', '0', '-id3v2_version', '3', /* keep metadata */
@@ -61,11 +61,7 @@ module.exports = function () {
                     '-metadata', 'encoder=', '-metadata', 'Catalog #=', '-metadata', 'Rip date=', '-metadata', 'Release type=',
                     '-metadata', 'Source=', '-metadata', 'Publisher=', '-metadata', 'Comment=', '-metadata', 'Track Number=',
                     '-b:a', '128k', '-c:a', 'libmp3lame', '-f', 'mp3', config.destPath + track.filename_128
-                    //'-codec:a', 'libmp3lame', '-b:a', '128k', config.destPath + track.filename_128
-                    //'-ab', '128k', config.destPath + track.filename_128 /* convert to 128 */
                 ]);
-                //ffmpeg -i input.wav -codec:a libmp3lame -b:a 128k output.mp3
-                //"-vn -b:a 128k -c:a libmp3lame -f mp3" //this is from ampache
 
                 ffmpeg.stdout.on('data', function (data) {
                     logger.info(data.toString());
@@ -78,7 +74,17 @@ module.exports = function () {
                 ffmpeg.on('close', function (code) {
                     exitCode += code;
                     if (code === 0) {
-                        copiedTracks.push(track.source.toString());
+                        //    copiedTracks.push(track.source.toString());
+                        Track
+                            .update({source: track.source}, {copied: true})
+                            .exec(function (err) {
+                                if (err) {
+                                    logger.error('Error while updating database:', '\n', err);
+                                }
+                                //else {
+                                //
+                                //}
+                            });
                     }
                     seriesCb();
                 });
@@ -93,29 +99,16 @@ module.exports = function () {
                     else {
                         logger.error('Not all files have been processed successfully');
                     }
-                    callback(null, Tracks, copiedTracks);
+                    callback(null, Tracks);
                 }
             });
-        },
-
-        function (Tracks, copiedTracks, callback) {
-            Track
-                .update({source: {$in: copiedTracks}}, {copied: true}, {multi: true})
-                .exec(function (err) {
-                    if (err) {
-                        logger.error('Error while updating database:', '\n', err);
-                    }
-                    else {
-                        callback(null, Tracks, copiedTracks);
-                    }
-                });
         }
 
-    ], function (err, Tracks, copiedTracks) {
+    ], function (err, Tracks) {
         if (err) {
             logger.error('Copier has encountered an error:', '\n', err);
         } else {
-            logger.info('Copier has finished. ' + copiedTracks.length + ' of ' + Tracks.length + ' track(s) were copied');
+            logger.info('Copier has finished. ' + copiedTracks.length + ' track(s) were copied');
         }
     });
 };
