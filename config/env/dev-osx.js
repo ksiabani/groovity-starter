@@ -5,7 +5,8 @@ module.exports = {
     destPath: '/Users/ksiabani/Music/Playing/',
     artPath: '/Users/ksiabani/Music/Playing',
     downPath: '/Users/ksiabani/Music/Playing',
-	db: 'mongodb://localhost/groovity-starter-dev',
+	//db: 'mongodb://localhost/groovity-starter-dev',
+	db: process.env.MONGODB_URI,
 	app: {
         title: 'The Groovity starter'
 	},

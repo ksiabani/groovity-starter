@@ -5,7 +5,8 @@ module.exports = {
     destPath: '/volume1/RaiNAS/music/live/2015/',
     artPath: '/volume1/RaiNAS/music/live/covers',
     downPath: '/volume1/RaiNAS/music/offline',
-	db: 'mongodb://178.62.56.31/groovity-starter',
+	//db: 'mongodb://178.62.56.31/groovity-starter',
+	db: process.env.MONGODB_URI,
 	app: {
         title: 'The Groovity starter'
 	},
