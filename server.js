@@ -47,7 +47,7 @@ var app = require('./config/express')(db);
 
 //run at 10:00
 //new CronJob('* 41 19 * * *', function(){
-    require('./config/copier')();
+//    require('./config/copier')();
 //}, null, true, 'Europe/Athens');
 
 //var body = '# Hello world!\n\nThis is a **markdown** message';
@@ -55,6 +55,8 @@ var app = require('./config/express')(db);
 
 // Start the app by listening on <port>
 //app.listen(config.port);
+
+require('./config/extractor')();
 
 // Expose app
 exports = module.exports = app;

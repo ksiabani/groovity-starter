@@ -1,11 +1,11 @@
 'use strict';
 
 module.exports = {
-    srcPath: '/volume1/RaiNAS/music/offline/2015/03-2015',
+    srcPath: '/volume1/RaiNAS/music/offline/2014',
     destPath: '/volume1/RaiNAS/music/live/2015/',
     artPath: '/volume1/RaiNAS/music/live/covers',
     downPath: '/volume1/RaiNAS/music/offline',
-	db: 'mongodb://192.168.1.104/groovity-starter',
+	db: 'mongodb://178.62.56.31/groovity-starter',
 	app: {
         title: 'The Groovity starter'
 	},
